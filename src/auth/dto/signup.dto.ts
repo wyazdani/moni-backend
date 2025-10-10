@@ -45,4 +45,11 @@ export class SignupDto {
   @IsNotEmpty()
   @IsString()
   readonly state: string;
+
+  @ApiProperty({
+    example: 'Google',
+  })
+  @Trim()
+  @IsString()
+  readonly where_did_hear?: string;
 }

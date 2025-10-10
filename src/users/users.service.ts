@@ -20,6 +20,10 @@ export class UsersService {
     return this.userModel.findOne({ email });
   }
 
+  findById(id: string) {
+    return this.userModel.findById(id);
+  }
+
   update(id: string, user: Partial<User>) {
     return this.userModel.findByIdAndUpdate(id, user);
   }

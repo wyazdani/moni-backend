@@ -14,6 +14,7 @@ import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ResendOtpDto } from './dto/resend-otp.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import type { SignedUser } from 'src/common/types/signed-user';
 
 @Injectable()
 export class AuthService {
@@ -127,16 +128,13 @@ export class AuthService {
     };
   }
 
-  findAll() {
-    return `This action returns all auth`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  async deleteAccount(signedUser: SignedUser) {
+    const user = this.userService.findById(signedUser._id);
+    if (!user) throw new UnauthorizedException('User not found');
+    await user.deleteOne();
+    return {
+      message: 'User deleted successfully',
+    };
   }
 
   getOtpMailTemplate(user: any, otp: string, from: string) {

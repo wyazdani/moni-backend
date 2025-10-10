@@ -53,6 +53,9 @@ export class User extends Document<mongoose.ObjectId> {
   })
   status?: Status;
 
+  @Prop()
+  where_did_hear?: string;
+
   @Prop({
     required: true,
     enum: Role,

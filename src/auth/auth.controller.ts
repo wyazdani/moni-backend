@@ -7,6 +7,8 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignupDto } from './dto/signup.dto';
@@ -15,6 +17,10 @@ import { CreatePasswordDto } from './dto/create-password.dto';
 import { LoginDto } from './dto/login.dto';
 import { ResendOtpDto } from './dto/resend-otp.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import type { SignedUser } from 'src/common/types/signed-user';
+import type { Request } from 'express';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -55,18 +61,11 @@ export class AuthController {
     return this.authService.forgotPassword(forgotPasswordDto);
   }
 
-  @Get()
-  findAll() {
-    return this.authService.findAll();
+  @Delete('delete-account')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
+  deleteAccount(@Req() req:Request) {
+    return this.authService.deleteAccount(req.user as SignedUser);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.authService.findOne(+id);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
-  }
 }
