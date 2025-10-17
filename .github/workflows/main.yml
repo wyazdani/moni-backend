@@ -26,9 +26,9 @@ jobs:
       - name: Restart or Start PM2 process
         run: |
           echo "🚀 Restarting or starting PM2 process..."
-          if pm2 list | grep -q "moni-backend"; then
+          if pm2 describe moni-backend > /dev/null 2>&1; then
             echo "♻️ App already running — restarting..."
-            pm2 restart moni-backend
+            pm2 restart moni-backend --update-env
           else
             echo "🆕 Starting app for first time..."
             pm2 start "yarn start" --name moni-backend
