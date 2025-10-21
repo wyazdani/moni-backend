@@ -65,7 +65,7 @@ export class AuthService {
       subject: 'Verify Email OTP',
       html: this.getOtpMailTemplate(isUserExists, otp, 'register'),
     });
-    isUserExists.state = Status.Pending;
+    isUserExists.status = Status.Pending;
     isUserExists.otp = otp;
     await isUserExists.save();
     return {
@@ -100,7 +100,7 @@ export class AuthService {
       _id,
       role,
     });
-    user.state = Status.Completed;
+    user.status = Status.Completed;
     user.otp = undefined;
     await user.save();
     return {
@@ -120,20 +120,11 @@ export class AuthService {
       subject: 'Verify Email OTP',
       html: this.getOtpMailTemplate(isUserExists, otp, 'forgot-password'),
     });
-    isUserExists.state = Status.Pending;
+    isUserExists.status = Status.Pending;
     isUserExists.otp = otp;
     await isUserExists.save();
     return {
       message: 'Otp sent to your email',
-    };
-  }
-
-  async deleteAccount(signedUser: SignedUser) {
-    const user = this.userService.findById(signedUser._id);
-    if (!user) throw new UnauthorizedException('User not found');
-    await user.deleteOne();
-    return {
-      message: 'User deleted successfully',
     };
   }
 

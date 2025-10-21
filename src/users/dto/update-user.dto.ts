@@ -1,55 +1,46 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
-import { ToLowerCase } from 'src/common/decorators/to-lower-case.decorator';
+import {
+  IsString,
+} from 'class-validator';
 import { Trim } from 'src/common/decorators/trim.decorator';
 
-
-export class SignupDto {
+export class UpdateUserDto {
   @ApiProperty({
     example: 'Tayyab',
+    required:false
   })
   @Trim()
-  @IsNotEmpty()
   @IsString()
   readonly first_name: string;
 
   @ApiProperty({
     example: 'Sheikh',
+    required:false
   })
   @Trim()
-  @IsNotEmpty()
   @IsString()
   readonly last_name: string;
 
   @ApiProperty({
-    example: 'tayaab@softwarealliance.io',
-  })
-  @Trim()
-  @IsNotEmpty()
-  @ToLowerCase()
-  @IsEmail()
-  readonly email: string;
-
-  @ApiProperty({
     example: 'pk',
+    required:false
   })
   @Trim()
-  @IsNotEmpty()
   @IsString()
   readonly country: string;
 
   @ApiProperty({
     example: 'Punjab',
+    required:false
   })
   @Trim()
-  @IsNotEmpty()
   @IsString()
   readonly state: string;
 
   @ApiProperty({
-    example: 'Google',
+    type: 'string',
+    format: 'binary',
+    required: false,
   })
-  @Trim()
-  @IsString()
-  readonly where_did_hear?: string;
+  readonly image: string;
 }

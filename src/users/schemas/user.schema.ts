@@ -65,6 +65,17 @@ export class User extends Document<mongoose.ObjectId> {
 
   @Prop()
   otp?: string;
+
+  @Prop()
+  profile_image?: string;
+
+  @Prop()
+  profile_image_public_id?: string;
+
+  @Prop({
+    default: true,
+  })
+  notification_enabled?: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

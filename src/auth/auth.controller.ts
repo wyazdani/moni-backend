@@ -61,11 +61,4 @@ export class AuthController {
     return this.authService.forgotPassword(forgotPasswordDto);
   }
 
-  @Delete('delete-account')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth('access-token')
-  deleteAccount(@Req() req:Request) {
-    return this.authService.deleteAccount(req.user as SignedUser);
-  }
-
 }
