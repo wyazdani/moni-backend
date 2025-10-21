@@ -1,0 +1,39 @@
+name: CI/CD Deploy Moni Backend
+
+on:
+  push:
+    branches:
+      - main   # or master, your default branch
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Copy environment file
+        run: |
+          cp /var/www/moni-backend-envs/moni-backend-env .env
+          echo "Success Copied env file to project root"
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build project
+        run: yarn build
+
+      - name: Restart or Start PM2 process
+        run: |
+          echo "🚀 Restarting or starting PM2 process..."
+          if pm2 describe moni-backend > /dev/null 2>&1; then
+            echo "♻️ App already running — restarting..."
+            pm2 restart moni-backend --update-env
+          else
+            echo "🆕 Starting app for first time..."
+            pm2 start "yarn start" --name moni-backend
+          fi
+          pm2 save
+
+      - name: Verify running processes
+        run: pm2 status
