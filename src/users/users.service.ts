@@ -47,11 +47,11 @@ export class UsersService {
       user.profile_image = url;
       user.profile_image_public_id = public_id;
     }
-    
+
     // Update user fields
     Object.assign(user, updateUserDto);
-    const updatedUser = await user.save();
-    return updatedUser;
+    await user.save();
+    return user;
   }
 
   async changePassword(
