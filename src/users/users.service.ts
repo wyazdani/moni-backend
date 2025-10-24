@@ -40,12 +40,14 @@ export class UsersService {
     const user = await this.findById(signedUser._id);
     if (!user) throw new UnauthorizedException('User not found');
     if (image) {
+      const oldPublicId = user.profile_image_public_id;
       const { url, public_id } = await this.cloudinaryService.uploadFile(
         image,
         'profile-images',
       );
       user.profile_image = url;
       user.profile_image_public_id = public_id;
+      oldPublicId && (await this.cloudinaryService.deleteFile(oldPublicId));
     }
 
     // Update user fields
