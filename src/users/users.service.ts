@@ -45,7 +45,7 @@ export class UsersService {
         image,
         'profile-images',
       );
-      user.profile_image = url;
+      user.profile_image = url.replace("http://", "https://");;
       user.profile_image_public_id = public_id;
       oldPublicId && (await this.cloudinaryService.deleteFile(oldPublicId));
     }
