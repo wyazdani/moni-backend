@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import OpenAI from 'openai';
+// import OpenAI from 'openai';
 
 @Injectable()
 export class AppService {
   async getHello() {
+    return 'Moni Backend is running!';
     // console.log('process.env.GPT_API_KEY', process.env.GPT_API_KEY);
     // const client = new OpenAI({ apiKey: process.env.GPT_API_KEY });
     
@@ -16,6 +17,6 @@ export class AppService {
     // });
 
     // console.log(response.output_text);
-    return 'Hello Moni!';
+    // return response.output_text;
   }
 }

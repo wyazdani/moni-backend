@@ -8,6 +8,7 @@ import * as bcrypt from 'bcrypt';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { removeUndefinedFields } from 'src/common/utils';
 
 @Injectable()
 export class UsersService {
@@ -45,13 +46,13 @@ export class UsersService {
         image,
         'profile-images',
       );
-      user.profile_image = url.replace("http://", "https://");;
+      user.profile_image = url.replace('http://', 'https://');
       user.profile_image_public_id = public_id;
       oldPublicId && (await this.cloudinaryService.deleteFile(oldPublicId));
     }
 
     // Update user fields
-    Object.assign(user, updateUserDto);
+    Object.assign(user, removeUndefinedFields(updateUserDto));
     await user.save();
     return user;
   }

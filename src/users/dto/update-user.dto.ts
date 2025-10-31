@@ -1,46 +1,45 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, OmitType, PartialType } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
-  IsString,
+  IsBoolean,
+  IsNumber,
+  IsOptional,
 } from 'class-validator';
-import { Trim } from 'src/common/decorators/trim.decorator';
+import { SignupDto } from 'src/auth/dto/signup.dto';
 
-export class UpdateUserDto {
-  @ApiProperty({
-    example: 'Tayyab',
+export class UpdateUserDto extends PartialType(OmitType(SignupDto,['email','where_did_hear'])) {
+    @ApiProperty({
+    example: 100000,
     required:false
   })
-  @Trim()
-  @IsString()
-  readonly first_name: string;
+  @Type(() =>  Number)
+  @IsNumber()
+  @IsOptional()
+  readonly income?: number;
 
   @ApiProperty({
-    example: 'Sheikh',
+    example: 950000,
     required:false
   })
-  @Trim()
-  @IsString()
-  readonly last_name: string;
-
-  @ApiProperty({
-    example: 'pk',
-    required:false
-  })
-  @Trim()
-  @IsString()
-  readonly country: string;
-
-  @ApiProperty({
-    example: 'Punjab',
-    required:false
-  })
-  @Trim()
-  @IsString()
-  readonly state: string;
+  @Type(() =>  Number)
+  @IsNumber()
+  @IsOptional()
+  readonly expense?: number;
 
   @ApiProperty({
     type: 'string',
     format: 'binary',
     required: false,
   })
-  readonly image: string;
+  @IsOptional()
+  readonly image?: string;
+
+  @ApiProperty({
+    example: true,
+    required:false
+  })
+  @Type(() =>  Boolean)
+  @IsBoolean()
+  @IsOptional()
+  readonly notification_enabled?: boolean;
 }

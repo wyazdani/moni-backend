@@ -67,6 +67,12 @@ export class User extends Document<mongoose.ObjectId> {
   otp?: string;
 
   @Prop()
+  income?: number;
+
+  @Prop()
+  expense?: number;
+
+  @Prop()
   profile_image?: string;
 
   @Prop()

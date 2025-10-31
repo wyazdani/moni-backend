@@ -6,6 +6,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
+    const req = ctx.getRequest<Request>();
     if (exception.code === 11000) {
       response.status(409).json({
         statusCode: 409,
