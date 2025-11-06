@@ -6,6 +6,7 @@ import { Message } from './schemas/message.schema';
 import { UsersService } from 'src/users/users.service';
 import { ConfigService } from '@nestjs/config';
 import { AuthenticatedSocket } from './messages.gateway';
+import { Role } from './enums/role.enum';
 
 @Injectable()
 export class MessagesService {
@@ -20,6 +21,20 @@ export class MessagesService {
     });
   }
 
+  async getMessages(userId: string) {
+    const messages = await this.messageModel
+      .find({ 'user._id': userId })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    return messages.map((m) => ({
+      ...m,
+      user: {
+        _id: m.role == 'user' ? m.user._id : m.role,
+      },
+    }));
+  }
+
   async getHistory(userId: string) {
     const history = await this.messageModel
       .find({ 'user._id': userId })
@@ -29,17 +44,16 @@ export class MessagesService {
 
     // Convert to OpenAI message format
     return history.map((m) => ({
-      role: (m.user._id === 'assistant' ? 'assistant' : 'user') as
-        | 'user'
-        | 'assistant',
+      role: m.role,
       content: m.text,
     }));
   }
 
-  async saveMessage(userId: string, text: string) {
+  async saveMessage(userId: string, text: string, role: Role) {
     const msg = {
       text,
       user: { _id: userId },
+      role,
     };
     await this.messageModel.create(msg);
     return msg;
@@ -47,7 +61,7 @@ export class MessagesService {
 
   async getFinancialSummary(userId: string) {
     const user = await this.usersService.findById(userId);
-    console.log({user})
+    // console.log({ user });
     const { income = 0, expense = 0 } = user || {};
     return (
       user &&
@@ -66,13 +80,13 @@ export class MessagesService {
     client: AuthenticatedSocket,
   ) {
     const history = await this.getHistory(userId);
-    console.log('History:', history);
+    // console.log('History:', history);
     const financialContext = await this.getFinancialSummary(userId);
-    console.log('Financial Context:', financialContext);
-    console.log('User Message:', userMessage);
+    // console.log('Financial Context:', financialContext);
+    // console.log('User Message:', userMessage);
 
     // Save the user message (GiftedChat format)
-    await this.saveMessage(userId, userMessage);
+    await this.saveMessage(userId, userMessage, Role.User);
 
     const stream = await this.client.chat.completions.create({
       model: 'gpt-4o-mini',
@@ -103,6 +117,6 @@ export class MessagesService {
       }
     }
     // Save assistant message in GiftedChat format
-    await this.saveMessage('assistant', fullResponse);
+    await this.saveMessage(userId, fullResponse, Role.Assistant);
   }
 }
