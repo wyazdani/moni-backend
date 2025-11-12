@@ -11,7 +11,6 @@ import { Role } from '../enums/role.enum';
       delete ret.password;
       delete ret.otp;
       delete ret.status;
-      delete ret.role;
       return ret;
     },
   },
