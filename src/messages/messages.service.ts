@@ -70,6 +70,25 @@ export class MessagesService {
             Total Income: ${income}
             Total Expense: ${expense}
             Remaining Balance: ${income - expense}
+
+            Previous spending (if not available, use 0):
+            weeklyExpenses: { food: 0, transport: 0, entertainment: 0 }
+            monthlyExpenses: { food: 0, transport: 0, entertainment: 0 }
+            totalMonthlySpending: 0
+            
+            Instructions:
+            - Respond naturally in conversational style.
+            - At the END of your message, append a stringified JSON of updated spending.
+            - Wrap the JSON with a PREFIX and POSTFIX for reliable extraction:
+            <<<SPENDING_JSON_START>>>
+            {
+              "weeklyExpenses": { "food": <number>, "transport": <number>, "entertainment": <number> },
+              "monthlyExpenses": { "food": <number>, "transport": <number>, "entertainment": <number> },
+              "totalMonthlySpending": <number>
+            }
+            <<<SPENDING_JSON_END>>>
+            - If the user hasn’t mentioned any spending, set all numbers to 0.
+            give me json response of this object in stringy format in last of message using --INFO-PREFIX--  and --INFO-POSTFIX, if infi about these is not avaliubale give me object with value 0
           `
     );
   }
@@ -116,6 +135,7 @@ export class MessagesService {
         client.emit(`receive-message`, token);
       }
     }
+    console.log('fullResponse', fullResponse);
     // Save assistant message in GiftedChat format
     await this.saveMessage(userId, fullResponse, Role.Assistant);
   }

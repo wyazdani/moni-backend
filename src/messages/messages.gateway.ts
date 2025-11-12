@@ -33,7 +33,7 @@ export class MessagesGateway
   server: Server;
 
   // Triggered when a client connects
-  handleConnection(@ConnectedSocket() client: Socket) {
+  handleConnection(@ConnectedSocket() client: AuthenticatedSocket) {
     console.log('Client connected:', client.id);
   }
 

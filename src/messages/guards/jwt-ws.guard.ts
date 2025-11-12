@@ -16,10 +16,11 @@ export class JwtWsGuard implements CanActivate {
     const token =
       client.handshake.auth?.token ||
       client.handshake.headers?.authorization?.replace('Bearer ', '');
-      console.log('token',token)
-    if (!token) {
-      client.emit('error','No token provided.');
-      return false
+
+      if (!token) {
+      client.emit('error', 'Unauthorized: Authentication failed');
+      client.disconnect();
+      return false;
     }
 
     try {
@@ -29,8 +30,9 @@ export class JwtWsGuard implements CanActivate {
       client.user = user; // ✅ Attach user to socket for further use
       return true;
     } catch (err) {
-      client.emit('error','Invalid or expired token.');
-      return false
+      client.emit('error', 'Unauthorized: Authentication failed');
+      client.disconnect();
+      return false;
     }
   }
 }
