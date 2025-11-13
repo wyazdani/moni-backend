@@ -45,8 +45,8 @@ export class UsersController {
   @Get('users-length')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin)
-  async findAllLength(@Query() query: GetAllUsersDto) {
-    const users = await this.usersService.findAll(query).lean();
+  async findAllLength() {
+    const users = await this.usersService.findAll().lean();
     return { users: users.length };
   }
 

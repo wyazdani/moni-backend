@@ -22,10 +22,10 @@ export class UsersService {
     return this.userModel.create(user);
   }
 
-  findAll(queryObj: GetAllUsersDto) {
+  findAll(queryObj?: GetAllUsersDto) {
     const pageSize = 10;
     let query = this.userModel.find();
-    const { page } = queryObj;
+    const { page } = queryObj || {};
     if (page) {
       query = query.skip(pageSize * (page - 1)).limit(pageSize);
     }
