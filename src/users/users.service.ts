@@ -9,6 +9,7 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { removeUndefinedFields } from 'src/common/utils';
+import { GetAllUsersDto } from './dto/get-all-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -21,8 +22,14 @@ export class UsersService {
     return this.userModel.create(user);
   }
 
-  findAll() {
-    return this.userModel.find();
+  findAll(queryObj: GetAllUsersDto) {
+    const pageSize = 10;
+    let query = this.userModel.find();
+    const { page } = queryObj;
+    if (page) {
+      query = query.skip(pageSize * (page - 1)).limit(pageSize);
+    }
+    return query;
   }
 
   findByEmail(email: string) {

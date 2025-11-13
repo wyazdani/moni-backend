@@ -10,6 +10,7 @@ import {
   ParseFilePipe,
   Post,
   Put,
+  Query,
   Req,
   UploadedFile,
   UseGuards,
@@ -26,6 +27,7 @@ import { ApiBearerAuth, ApiConsumes } from '@nestjs/swagger';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { GetAllUsersDto } from './dto/get-all-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -35,8 +37,8 @@ export class UsersController {
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin)
-  findAll() {
-    return this.usersService.findAll();
+  findAll(@Query() query: GetAllUsersDto) {
+    return this.usersService.findAll(query);
   }
 
   @ApiBearerAuth('access-token')
@@ -64,7 +66,7 @@ export class UsersController {
       new ParseFilePipe({
         fileIsRequired: false,
         validators: [
-          new MaxFileSizeValidator({ maxSize: 10 * 1024 * 1024 }),  // 10MB
+          new MaxFileSizeValidator({ maxSize: 10 * 1024 * 1024 }), // 10MB
           new FileTypeValidator({ fileType: 'image/*' }),
         ],
       }),
@@ -82,8 +84,7 @@ export class UsersController {
   @ApiBearerAuth('access-token')
   @Delete('delete-account')
   @UseGuards(JwtAuthGuard)
-  deleteAccount(@Req() req:Request) {
+  deleteAccount(@Req() req: Request) {
     return this.usersService.deleteAccount(req.user as SignedUser);
   }
-
 }
