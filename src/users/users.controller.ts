@@ -42,6 +42,15 @@ export class UsersController {
   }
 
   @ApiBearerAuth('access-token')
+  @Get('users-length')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  async findAllLength(@Query() query: GetAllUsersDto) {
+    const users = await this.usersService.findAll(query).lean();
+    return { users: users.length };
+  }
+
+  @ApiBearerAuth('access-token')
   @Post('change-password')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
